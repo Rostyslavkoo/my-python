@@ -1,0 +1,885 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    \usepackage[utf8]{inputenc}
+    \usepackage[english,ukrainian]{babel}
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+\begin{center}
+Міністерство освіти і науки України \\
+Львівський національний університет імені Івана Франка \\
+Факультет прикладної математики та інформатики \\
+Кафедра програмування
+\end{center}
+\vfill
+\begin{flushright}
+\end{flushright}
+\vfill
+\begin{center}
+\textbf{Лабораторна робота} \\
+Функцiї Лаґерра \\
+з курсу “Виробнича практика”
+\end{center}
+\vfill
+\begin{flushright}
+\textbf{Виконав:} \\
+студент групи ПМІ-21 \\
+Урдейчук Ростислав Ігорович
+\end{flushright}
+\vfill
+\begin{center}
+Львів – 2023 \\
+\textbf{Мета роботи:} реалізувати програму для виконання обчислень функцій Лаґерра та їх перетворень
+\end{center}
+
+\newpage
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{82}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{ipywidgets} 
+\end{Verbatim}
+\end{tcolorbox}
+\textbf{Завдання 1}
+
+Побудувати функцiю для обчислення значення функцiї Лаґерра за формулою (1.2) для довiльних t i n, а параметри задавати за замовчуванням β = 2, σ = 4.
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{83}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 1}
+\PY{k}{def} \PY{n+nf}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{t}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Check if the input parameters are valid}
+    \PY{k}{if} \PY{n}{n} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{beta} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{beta}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ and }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{beta} \PY{o}{\PYZgt{}} \PY{n}{sigma}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{beta}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ must be less than }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{sigma}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Calculate the first two Laguerre polynomials}
+    \PY{n}{l\PYZus{}0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{sigma}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{beta} \PY{o}{*} \PY{n}{t} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+    \PY{n}{l\PYZus{}1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{sigma}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{sigma} \PY{o}{*} \PY{n}{t}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{beta} \PY{o}{*} \PY{n}{t} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Return the appropriate Laguerre polynomial}
+    \PY{k}{if} \PY{n}{n} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{return} \PY{n}{l\PYZus{}0}
+    \PY{k}{if} \PY{n}{n} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+        \PY{k}{return} \PY{n}{l\PYZus{}1}
+    \PY{k}{if} \PY{n}{n} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{2}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} Calculate the next Laguerre polynomial using the recurrence relation}
+        \PY{n}{l\PYZus{}next} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{t} \PY{o}{*} \PY{n}{sigma}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{l\PYZus{}1} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{l\PYZus{}0}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+            \PY{n}{l\PYZus{}0} \PY{o}{=} \PY{n}{l\PYZus{}1}
+            \PY{n}{l\PYZus{}1} \PY{o}{=} \PY{n}{l\PYZus{}next}
+            \PY{n}{l\PYZus{}next} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{j} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{t} \PY{o}{*} \PY{n}{sigma}\PY{p}{)} \PY{o}{/} \PY{n}{j} \PY{o}{*} \PY{n}{l\PYZus{}1} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{j} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{n}{j} \PY{o}{*} \PY{n}{l\PYZus{}0}
+        \PY{k}{return} \PY{n}{l\PYZus{}next}
+
+\PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{83}{\boxspacing}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+2.728331346558944
+\end{Verbatim}
+\end{tcolorbox}
+\
+\newpage
+\textbf{Завдання 2}
+
+Побудувати функцiю для табулювання при заданих n, β, σ функцiї Лаґерра на вiдрiзку [0, T] iз заданим T ∈ R+.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 2:}
+
+
+\PY{k}{def} \PY{n+nf}{tabulate\PYZus{}laguerre}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{step} \PY{o}{=} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Check if the input parameters are valid}
+    \PY{k}{if} \PY{n}{beta} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{beta}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{sigma} \PY{o}{\PYZlt{}} \PY{n}{beta}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{sigma}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ must be greater than beta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{n} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Generate the values at which the Laguerre polynomial will be evaluated}
+    \PY{n}{values} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{step}\PY{p}{)}
+    \PY{n}{results} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Calculate the Laguerre polynomial at each value and store the results}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{values}\PY{p}{:}
+        \PY{n}{results}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{values}\PY{p}{,} \PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{n}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{results}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{n}{wd\PYZus{}n} \PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,}\PY{n}{value}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{wd\PYZus{}t} \PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,}\PY{n}{value}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{ipywidgets}\PY{o}{.}\PY{n}{interact}\PY{p}{(}\PY{n}{tabulate\PYZus{}laguerre}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{n}{wd\PYZus{}n}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{wd\PYZus{}t}\PY{p}{,} \PY{n}{step} \PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mf}{0.1}\PY{p}{)}\PY{p}{,} \PY{n}{beta}\PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{n}{sigma}\PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} tabulate\PYZus{}laguerre(10, 5)}
+\end{Verbatim}
+\end{tcolorbox}
+
+\begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Screenshot 2023-12-12 214208.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+    value       L\_10
+0     0.0   2.000000
+1     0.1  -0.862034
+2     0.2   0.208811
+3     0.3   0.813099
+4     0.4   0.407820
+5     0.5  -0.374915
+6     0.6  -0.895047
+7     0.7  -0.869244
+8     0.8  -0.359912
+9     0.9   0.370340
+10    1.0   1.014802
+11    1.1   1.336028
+12    1.2   1.223050
+13    1.3   0.699280
+14    1.4  -0.103945
+15    1.5  -0.991973
+16    1.6  -1.755778
+17    1.7  -2.215171
+18    1.8  -2.250243
+19    1.9  -1.818493
+20    2.0  -0.957821
+21    2.1   0.222552
+22    2.2   1.560120
+23    2.3   2.862521
+24    2.4   3.932902
+25    2.5   4.594154
+26    2.6   4.709624
+27    2.7   4.198601
+28    2.8   3.045622
+29    2.9   1.303312
+30    3.0  -0.910961
+31    3.1  -3.423894
+32    3.2  -6.019448
+33    3.3  -8.455212
+34    3.4 -10.480585
+35    3.5 -11.855478
+36    3.6 -12.368304
+37    3.7 -11.852203
+38    3.8 -10.198612
+39    3.9  -7.367548
+40    4.0  -3.394134
+41    4.1   1.608806
+42    4.2   7.452136
+43    4.3  13.875585
+44    4.4  20.556405
+45    4.5  27.121060
+46    4.6  33.159417
+47    4.7  38.240831
+48    4.8  41.931501
+49    4.9  43.812462
+\end{Verbatim}
+\end{tcolorbox}
+\newpage
+\textbf{Завдання 3}
+
+Провести обчислювальний експеримент: для N = 20 на основi графi кiв з п.2 знайти точку T > 0, щоб |ln(T)| < ε = 10−3 для усiх n ∈ [0, N]. Побудувати табличку для |ln(T)| для усiх n ∈ [0, N].
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{85}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 3:}
+
+\PY{k}{def} \PY{n+nf}{experiment}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{20}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{,} \PY{n}{T} \PY{o}{=} \PY{l+m+mi}{100}\PY{p}{,} \PY{n}{eps} \PY{o}{=} \PY{l+m+mf}{0.001}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Check if the input parameters are valid}
+    \PY{k}{if} \PY{n}{T} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{eps} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{N} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{beta} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{T, epsilon, N and beta must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{beta} \PY{o}{\PYZgt{}} \PY{n}{sigma}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{beta must be less than sigma}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Generate the values at which the Laguerre polynomial will be evaluated}
+    \PY{n}{values} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{n} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{N} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{k+kc}{None}
+    
+    \PY{c+c1}{\PYZsh{} Find the first value for which all Laguerre polynomials are less than epsilon}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{values}\PY{p}{:}
+        \PY{n}{check} \PY{o}{=} \PY{k+kc}{True}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{n}\PY{p}{:}
+            \PY{k}{if} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{n}{eps}\PY{p}{:}
+                \PY{n}{check} \PY{o}{=} \PY{k+kc}{False}
+                \PY{k}{break}
+        \PY{k}{if} \PY{n}{check} \PY{o+ow}{and} \PY{n}{res} \PY{o+ow}{is} \PY{k+kc}{None}\PY{p}{:}
+            \PY{n}{res} \PY{o}{=} \PY{n}{i}
+            \PY{k}{break}
+
+    \PY{c+c1}{\PYZsh{} Tabulate the Laguerre polynomials at the found value}
+    \PY{n}{tabulation} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{n}\PY{p}{:}
+        \PY{n}{tabulation}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{res}\PY{p}{,} \PY{n}{i}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{res}\PY{p}{,} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{n}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{tabulation}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{n}{r}\PY{p}{,} \PY{n}{df} \PY{o}{=} \PY{n}{experiment}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Task 3: result = }\PY{l+s+si}{\PYZob{}}\PY{n}{r}\PY{l+s+si}{\PYZcb{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Task 3: result = 79.07907907907908
+
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{85}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     n             f
+0    0  9.066138e-35
+1    1 -2.858701e-32
+2    2  4.478343e-30
+3    3 -4.647081e-28
+4    4  3.593209e-26
+5    5 -2.208132e-24
+6    6  1.123332e-22
+7    7 -4.865604e-21
+8    8  1.831625e-19
+9    9 -6.087176e-18
+10  10  1.808168e-16
+11  11 -4.848845e-15
+12  12  1.183547e-13
+13  13 -2.647728e-12
+14  14  5.460659e-11
+15  15 -1.043487e-09
+16  16  1.855654e-08
+17  17 -3.082750e-07
+18  18  4.800407e-06
+19  19 -7.027805e-05
+20  20  9.699021e-04
+\end{Verbatim}
+\end{tcolorbox}
+        \newpage
+\textbf{Завдання 4}
+
+Провести обчислювальний експеримент: для N = 20 на основi графi кiв з п.2 знайти точку T > 0, щоб |ln(T)| < ε = 10−3 для усiх n ∈ [0, N]. Побудувати табличку для |ln(T)| для усiх n ∈ [0, N].
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 4:}
+
+\PY{k}{def} \PY{n+nf}{met\PYZus{}rectangles}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{start}\PY{p}{,} \PY{n}{end}\PY{p}{,} \PY{n}{points} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Generate the points at which \PYZsq{}f\PYZsq{} will be evaluated}
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{start}\PY{p}{,} \PY{n}{end}\PY{p}{,} \PY{n}{points}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} Calculate the sum of the function values at the points}
+    \PY{n}{s} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{p}{[}\PY{n}{f}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} Return the integral approximation}
+    \PY{k}{return} \PY{n}{s} \PY{o}{*} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{end} \PY{o}{\PYZhy{}} \PY{n}{start}\PY{p}{)} \PY{o}{/} \PY{n}{points}
+
+
+\PY{k}{def} \PY{n+nf}{transform\PYZus{}laguerre}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{points} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Check if the input parameters are valid}
+    \PY{k}{if} \PY{n}{N} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{points} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{beta} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N, points and beta must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{beta} \PY{o}{\PYZgt{}} \PY{n}{sigma}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{beta must be less than sigma}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Define the function to be integrated}
+    \PY{k}{def} \PY{n+nf}{integral}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{f}\PY{p}{(}\PY{n}{t}\PY{p}{)} \PY{o}{*} \PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{t}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{sigma}\PY{o}{\PYZhy{}}\PY{n}{beta}\PY{p}{)} \PY{o}{*} \PY{n}{t}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Find the end point of the integral}
+    \PY{n}{end} \PY{o}{=} \PY{n}{experiment}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+    
+    \PY{c+c1}{\PYZsh{} Return the integral of the transformed function}
+    \PY{k}{return} \PY{n}{met\PYZus{}rectangles}\PY{p}{(}\PY{n}{integral}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{end}\PY{p}{,} \PY{n}{points}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Define the function to be integrated}
+\PY{n}{f} \PY{o}{=} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{met\PYZus{}rectangles}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{10000}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+        \newpage
+\textbf{Завдання 5}
+
+Завдання: Для функцiї ... виконати ПЛ, а саме знайти коефiцiєнти fN := (f0, f1, . . . , fN )⊤ при N = 20.
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+1.0049083341528509
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{87}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 5:}
+
+\PY{k}{def} \PY{n+nf}{transform\PYZus{}tabulate\PYZus{}laguerre}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{points} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Check if the input parameters are valid}
+    \PY{k}{if} \PY{n}{N} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{points} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{o+ow}{or} \PY{n}{beta} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N, points and beta must be positive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{if} \PY{n}{beta} \PY{o}{\PYZgt{}} \PY{n}{sigma}\PY{p}{:}
+        \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{beta must be less than sigma}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Generate the values at which the transformed function will be evaluated}
+    \PY{n}{values} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{N}\PY{p}{)}
+    \PY{n}{results} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Calculate the transformed function at each value and store the results}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{values}\PY{p}{:}
+        \PY{n}{results}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{transform\PYZus{}laguerre}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{i}\PY{p}{,} \PY{n}{points}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Return the results as a pandas DataFrame}
+    \PY{k}{return} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{values}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{results}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Define the function to be transformed}
+\PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{t} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mi}{0}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{t} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}
+
+\PY{n}{wd\PYZus{}n} \PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,}\PY{n}{value}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+
+\PY{n}{ipywidgets}\PY{o}{.}\PY{n}{interact}\PY{p}{(}\PY{n}{transform\PYZus{}tabulate\PYZus{}laguerre}\PY{p}{,} \PY{n}{f}\PY{o}{=}\PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{n}{f}\PY{p}{)}\PY{p}{,} \PY{n}{N}\PY{o}{=}\PY{n}{wd\PYZus{}n}\PY{p}{,} \PY{n}{points} \PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{,} \PY{n}{beta}\PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{n}{sigma}\PY{o}{=} \PY{n}{ipywidgets}\PY{o}{.}\PY{n}{fixed}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+    
+\PY{c+c1}{\PYZsh{} transform\PYZus{}tabulate\PYZus{}laguerre(f, 20, 1000)}
+\end{Verbatim}
+\end{tcolorbox}
+\begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Screenshot 2023-12-12 215108.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{87}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+    value         f
+0       0  0.066600
+1       1 -0.182040
+2       2  0.177896
+3       3 -0.074216
+4       4  0.007256
+5       5  0.007581
+6       6 -0.003094
+7       7 -0.000615
+8       8  0.000798
+9       9 -0.000027
+10     10 -0.000237
+11     11  0.000051
+12     12  0.000091
+13     13 -0.000034
+14     14 -0.000057
+15     15  0.000005
+16     16  0.000029
+17     17 -0.000004
+18     18 -0.000034
+19     19 -0.000026
+\end{Verbatim}
+\end{tcolorbox}
+             \newpage
+\textbf{Завдання 6}
+
+Побудувати функцiю, яка для заданої послiдовностi hN = (h0, h1, ..., hk, ... hN , 0, 0, ...)⊤, N ∈ N, (яка має скiнчене число вiдмiнних вiд нуля елементiв) обчислює значення функцiї hN (t) (обернене) у точцi t ∈ R+ за формулою (1.4).
+  
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 6:}
+
+\PY{k}{def} \PY{n+nf}{reversed\PYZus{}transform\PYZus{}laguerre}\PY{p}{(}\PY{n}{seq}\PY{p}{,} \PY{n}{t}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sum\PYZus{}res} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{c+c1}{\PYZsh{} Calculate the sum of the sequence elements multiplied by the Laguerre polynomial}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{seq}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{sum\PYZus{}res} \PY{o}{+}\PY{o}{=} \PY{n}{seq}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{*} \PY{n}{laguerre\PYZus{}pol}\PY{p}{(}\PY{n}{t}\PY{p}{,} \PY{n}{i}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Return the result of the reverse transformation}
+    \PY{k}{return} \PY{n}{sum\PYZus{}res}
+
+\PY{c+c1}{\PYZsh{} Define the function to be tested}
+\PY{k}{def} \PY{n+nf}{test\PYZus{}f}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{x} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}
+
+
+\PY{n}{reversed\PYZus{}transform\PYZus{}laguerre}\PY{p}{(}\PY{n}{transform\PYZus{}tabulate\PYZus{}laguerre}\PY{p}{(}\PY{n}{test\PYZus{}f}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+8.991189909755084
+\end{Verbatim}
+\end{tcolorbox}
+\newpage
+\textbf{Завдання 7}
+
+Завдання: За даними завдання 2 побудувати графiки функцiй Лаґерра ln(t), t ∈ [0, T], n ∈ [0, N].
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 7:}
+
+\PY{k}{def} \PY{n+nf}{laguerre\PYZus{}graph}\PY{p}{(}\PY{n}{T}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{step} \PY{o}{=} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Create a new figure}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Plot the Laguerre polynomial for each degree less than or equal to N}
+    \PY{k}{for} \PY{n}{n} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{N} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{df\PYZus{}tabulation} \PY{o}{=} \PY{n}{tabulate\PYZus{}laguerre}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{step}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{df\PYZus{}tabulation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{df\PYZus{}tabulation}\PY{p}{[}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{n}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{n=}\PY{l+s+si}{\PYZob{}}\PY{n}{n}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Многочлени Лагера}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{savefig}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{figure\PYZus{}01.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+    
+\PY{n}{laguerre\PYZus{}graph}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{figure_01.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    \newpage
+\textbf{Завдання 8}
+
+Завдання: Для функцiї (1.7) виконати пряме i обернене ПЛ при деяких значеннях N. Побудувати графiк функцiї fN(t) (обернене), t ∈ [0, 2π].
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Task 8:}
+
+\PY{k}{def} \PY{n+nf}{reversed\PYZus{}transform\PYZus{}laguerre\PYZus{}graph}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{T} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{step} \PY{o}{=} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{points} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{,} \PY{n}{beta} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sigma} \PY{o}{=} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Transform and tabulate the function}
+    \PY{n}{seq} \PY{o}{=} \PY{n}{transform\PYZus{}tabulate\PYZus{}laguerre}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{n}{points}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Generate the values at which the reverse transformation will be evaluated}
+    \PY{n}{values} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{step}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Calculate the reverse transformation at each value and store the results}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{values}\PY{p}{:}
+        \PY{n}{res}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{reversed\PYZus{}transform\PYZus{}laguerre}\PY{p}{(}\PY{n}{seq}\PY{p}{,} \PY{n}{i}\PY{p}{,} \PY{n}{beta}\PY{p}{,} \PY{n}{sigma}\PY{p}{)}\PY{p}{)}
+        
+    \PY{n}{reversed\PYZus{}tabulation} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{values}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f(value)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{res}\PY{p}{\PYZcb{}}\PY{p}{)}
+    
+    \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{reversed\PYZus{}tabulation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{reversed\PYZus{}tabulation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f(value)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Обернене перетворення Лагера}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{savefig}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{figure\PYZus{}02.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{test\PYZus{}f2}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+
+\PY{n}{reversed\PYZus{}transform\PYZus{}laguerre\PYZus{}graph}\PY{p}{(}\PY{n}{test\PYZus{}f2}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{figure_02.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+\textbf{Висновок}
+В процесі виконання цієї практичної роботи, я детально вивчив функції Лагера та покращив свої навички використання інструментів з бібліотек pandas для створення таблиць та matplotlib.pyplot для графічного відображення даних.
+    
+\end{document}
