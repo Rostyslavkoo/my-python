@@ -1,0 +1,4 @@
+date,employee_id,spent_hours,car_brand
+2024-01-01,101,2,Toyota
+2024-01-02,102,3,Ford
+2024-01-03,103,4,Chevrolet
